@@ -1,1 +1,1 @@
-readme fiel for matlab scripts
+readme file for matlab scripts
