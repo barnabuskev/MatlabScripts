@@ -33,6 +33,10 @@ then change to that branch:
 
 	git checkout nameofbranch
 
+You can make changes on this branch and then see how it differs from master:
+
+	git diff master
+
 
 
 
