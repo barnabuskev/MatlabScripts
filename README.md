@@ -25,4 +25,8 @@ You can then push changes to github:
 
 Enter username and password.
 
-The above description does not use any branching an assumes the master branch is used.
+The above description does not use any branching and assumes the master branch is used. To use branching, create a branch in the local repository:
+
+	git checkout nameofbranch
+
+
