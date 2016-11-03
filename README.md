@@ -11,4 +11,18 @@ To copy onto computer for first time for editing:
 
 	git clone https://github.com/barnabuskev/MatlabScripts.git
 
-Make changes on local directory and then 'add' the file ('stage changes')
+Make changes on local directory and then 'add' the file ('stage changes'):
+
+	git add <filename>
+
+where filename is the name of the file that has been changed. You can then commit it/them to the present branch:
+
+	git commit
+
+You can then push changes to github:
+
+	git push
+
+Enter username and password.
+
+The above description does not use any branching an assumes the master branch is used.
