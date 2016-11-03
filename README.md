@@ -27,6 +27,12 @@ Enter username and password.
 
 The above description does not use any branching and assumes the master branch is used. To use branching, create a branch in the local repository:
 
+	git branch nameofbranch
+
+then change to that branch:
+
 	git checkout nameofbranch
+
+
 
 
