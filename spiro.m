@@ -1,6 +1,7 @@
 function spiro
-%function to data for spirometer experiments
-%2014 K Brownhill
+% Function to obtain data from the datalab2000 spirometer as well as experiment metadata
+% version v2016
+% 2016 K Brownhill
 % config values
 % ~~~~~~~~~~~~~
 % sample rate
@@ -122,5 +123,3 @@ while getmore
         getmore = false;
     end
 end
-
-
