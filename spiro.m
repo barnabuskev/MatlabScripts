@@ -77,6 +77,7 @@ while true
     % make conds flat and then insert delimiters
     condstr = strjoin(reshape(conds',1,numel(conds)),[{' = '},repstr]);
     while isempty(phs)
+        % get user choice
         phs = input(['Which phase of the experiment is this? ',condstr,'  '],'s');
         if ~any(strcmpi(phs,conds(:,2)))
             sprintf('%s','Incorrect option chosen');
