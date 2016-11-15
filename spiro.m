@@ -67,10 +67,14 @@ while true
         delete(AI)
         return
     end
-    %get which phase of experiment
+    %get which phase of experiment...
+    %empty string to store experiment phase (conditions)
     phs = '';
+    % set delimiter
     delimatm = {', ',' = '};
+    % make delimiter longer if more than 2 conditions
     repstr = repmat(delimatm, 1, size(conds,1) - 1);
+    % make conds flat and then insert delimiters
     condstr = strjoin(reshape(conds',1,numel(conds)),[{' = '},repstr]);
     while isempty(phs)
         phs = input(['Which phase of the experiment is this? ',condstr,'  '],'s');
