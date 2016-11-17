@@ -1,0 +1,19 @@
+liTimeStamp.binary files:
+
+Read as signed 64 bit integers (sign doesn't matter they are all positive values)
+
+For each frame 5 rows are written to file:
+1) the frame count since the beginning of data recording
+2) the frame counter since when KinectExplorer-D2D started
+3) zero (always)
+4) the time in miliseconds since???
+5) the same time as 4) (always)
+
+
+Joint position binary files:
+
+where there is data (i.e. data> 0), there are 3 floating point number followed by a 1 or a 2.
+The floating points probably represent x,y & z values and the 1 or 2 unknown.
+
+Where there is data the run of data lasts for 80, ie 20 sets of 4 ie the joint positions of 20 joints at that point
+
