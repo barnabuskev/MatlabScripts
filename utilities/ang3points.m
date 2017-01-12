@@ -12,7 +12,7 @@ v1 = p3(1,:) - p3(2,:);
 v2 = p3(3,:) - p3(2,:);
 %get angle of v1 from (1,0)
 v1a = atan2(v1(2),v1(1));
-%rotate v2 back by this amount
+%rotate v2 back by this amount (i.e. clockwise)
 rot = [cos(-v1a),-sin(-v1a);sin(-v1a),cos(-v1a)];
 v2 = (rot * v2')';
 %get angle of transformed v2 from (1,0)
