@@ -1,4 +1,4 @@
-function outstruct = ConvertKinectBin
+function outstruct = ConvertKinectBin(varargin)
 % Function to read Kinect sensor timestamp and joint position binary files
 % and export data as a structure with the following fields: time, skel_1, skel_2,
 % ..., skel_6 (up to 6 skeletons. Empty skeletons are not recorded. Empty
@@ -10,6 +10,20 @@ function outstruct = ConvertKinectBin
 %  3rd col: z position data
 % 
 % Details on data format at: https://kinectstreamsaver.codeplex.com/
+
+% Input:
+% if no arguments given, then user selects time stamp and joint position
+% files. Otherwise 2 arguments must be given with the full file path of
+% timestamp and joint position files:
+% ConvertKinectBin('path\to\liTimeStamp.binary','path\to\Joint_Position.binary')
+
+
+% check inputs
+if nargin~=0 && nargin~=2
+    error('Wrong number of input arguments. Either none or filepath of timestamp and joint position file')
+end
+
+
 % OPTIONS...
 % joint order
 j_ord = {'HIP_CENTER', 'SPINE', 'SHOULDER_CENTER', 'HEAD', 'SHOULDER_LEFT',...
@@ -24,21 +38,29 @@ jt_per_tp = 4;
 n_jts = length(j_ord);
 % number of skeletons (always 6 I think)
 n_skel = 6;
+
 % GET TIME DATA
-[fn,pn,fi] = uigetfile('*.binary','Get timestamp data');
-if fi==0
-    disp('No timestamp data chosen. Exiting ConvertKinectBin');
-    return
+if nargin == 0
+    [tsfn,tspn,fi] = uigetfile('*.binary','Get timestamp data');
+    if fi==0
+        disp('No timestamp data chosen. Exiting ConvertKinectBin');
+        return
+    end
+    tsfile = fullfile(tspn,tsfn);
+else
+    tsfile = varargin{1};
+    [tspn,~,~] = fileparts(tsfile);
 end
-% read file
-fid = fopen(fullfile(pn,fn));
+
+% read time data
+fid = fopen(tsfile);
 t_dat = fread(fid,'int64');
 fclose(fid);
 % change to this directory
-cd(pn)
+cd(tspn)
 % reshape data
 t_dat = transpose(reshape(t_dat,td_rows_per_tp,[]));
-% discard all except time stamp and convert to seconds
+% discard all except time stamp data (last column assumed) and convert to seconds
 t_dat = t_dat(:,end)/1000;
 % start time stamp at zero
 t_dat = t_dat - t_dat(1);
@@ -48,13 +70,19 @@ outstruct = struct('time',t_dat);
 
 
 % GET JOINT POSITION DATA
-[fn,pn,fi] = uigetfile('.binary','Get joint position data');
-if fi==0
-    disp('No joint position data chosen. Exiting ConvertKinectBin');
-    return
+if nargin == 0
+    [jpfn,jppn,fi] = uigetfile('.binary','Get joint position data');
+    if fi==0
+        disp('No joint position data chosen. Exiting ConvertKinectBin');
+        return
+    end
+    jpfile = fullfile(jppn,jpfn);
+else
+    jpfile = varargin{2};
 end
+
 % read joint position file
-fid = fopen(fullfile(pn,fn));
+fid = fopen(jpfile);
 jpos_dat = fread(fid,'float');
 fclose(fid);
 % get number of frames (time points)
@@ -64,8 +92,7 @@ nframe = size(t_dat,1);
 % the 4th is time point. The next line should give an error if number of
 % frames is not same in timestamp data as joint position data
 jpos_dat = reshape(jpos_dat,jt_per_tp,n_jts,n_skel,nframe);
-% substitute tracking status data with time data
-jpos_dat(jt_per_tp,1,1,:) = t_dat;
+
 
 % STORE NON-EMPTY SKELETON DATA IN A STRUCTURE
 for skeli = 1:n_skel
@@ -82,28 +109,8 @@ for skeli = 1:n_skel
         end
     end
 end
-whereall0(outstruct)
 end
 
-function whereall0(S)
-% function to take skeleton data structure and show where data are all
-% zeros
-S = rmfield(S,'time');
-fnms = fieldnames(S);
-for skeli = 1:length(fnms)
-    disp(['skeleton: ',fnms{skeli}])
-    sklS = S.(fnms{skeli});
-    sklfnms = fieldnames(sklS);
-    for jnti = 1:length(sklfnms)
-        if any(any(sklS.(sklfnms{jnti})~=0))
-            stat = 'some data';
-        else
-            stat = 'all zeros';
-        end
-        disp(['Joint ',sklfnms{jnti},': ',stat])
-    end
-end
-end
 
 function empt = is_skel_empty(skeldat)
 % function takes a jt_per_tp * n_jts * nframe array and returns true if
